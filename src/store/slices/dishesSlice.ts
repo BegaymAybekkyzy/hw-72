@@ -1,10 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 import {
   deleteDish,
   fetchAllDishes,
   idDish,
   submitNewDish,
-} from "../thunks/dishesThunks.ts";
+} from '../thunks/dishesThunks.ts';
+import { RootState } from '../../app/store.ts';
 
 interface DishesState {
   dishes: Dish[];
@@ -18,8 +19,17 @@ const initialState: DishesState = {
   loading: false,
 };
 
+export const selectDishesArray =
+  (state: RootState) => state.dishes.dishes;
+
+export const selectDishLoading =
+  (state: RootState) => state.dishes.loading;
+
+export const selectDish =
+  (state: RootState) => state.dishes.dish;
+
 export const dishesSlice = createSlice({
-  name: "dishes",
+  name: 'dishes',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -27,7 +37,7 @@ export const dishesSlice = createSlice({
       .addCase(fetchAllDishes.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchAllDishes.fulfilled, (state, { payload }) => {
+      .addCase(fetchAllDishes.fulfilled, (state, {payload}) => {
         state.loading = false;
         state.dishes = payload;
       })
@@ -58,7 +68,7 @@ export const dishesSlice = createSlice({
       .addCase(idDish.pending, (state) => {
         state.loading = true;
       })
-      .addCase(idDish.fulfilled, (state, { payload }) => {
+      .addCase(idDish.fulfilled, (state, {payload}) => {
         state.loading = false;
         state.dish = payload;
       })

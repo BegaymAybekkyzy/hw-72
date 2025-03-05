@@ -26,7 +26,7 @@ export const deleteDish = createAsyncThunk<void, string>(
 export const submitNewDish = createAsyncThunk<void, DishForm>(
   "dishes/submitNewDish",
   async (dish) => {
-    await axiosAPI.post("pizza/dishes", dish);
+    await axiosAPI.post("pizza/dishes.json", dish);
   },
 );
 
