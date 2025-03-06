@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
-import { useAppDispatch } from '../../app/hooks.ts';
-import { submitNewDish } from '../../store/thunks/dishesThunks.ts';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Image } from 'react-bootstrap';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import { dishEditing, submitNewDish } from '../../store/Dishes/dishesThunks.ts';
+import { cleaningTheEditedDish, selectDish, selectDishLoading } from '../../store/Dishes/dishesSlice.ts';
+import { NavLink } from 'react-router-dom';
+
+interface Props {
+  isEdit?: boolean;
+}
 
 const initialValues = {
   title: '',
   price: 0,
   image: '',
 };
-const DishForm = () => {
+const DishForm: React.FC<Props> = ({isEdit = false}) => {
   const [form, setForm] = useState<DishForm>(initialValues);
+
+  const modifiedDish = useAppSelector(selectDish);
+  const loading = useAppSelector(selectDishLoading);
+
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if(isEdit && modifiedDish) setForm(modifiedDish);
+  }, [isEdit, modifiedDish]);
 
   const onSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +34,13 @@ const DishForm = () => {
       setForm(initialValues);
       return;
     }
-    dispatch(submitNewDish({...form}));
+
+    if(isEdit && modifiedDish) {
+      dispatch(dishEditing({...form, id: modifiedDish.id}));
+      dispatch(cleaningTheEditedDish());
+    } else {
+      dispatch(submitNewDish({...form}));
+    }
     setForm(initialValues);
   };
 
@@ -36,6 +56,7 @@ const DishForm = () => {
         <Form.Control
           type="text"
           required
+          disabled={loading}
           onChange={onChangeInput}
           minLength={1}
           name="title"
@@ -47,6 +68,7 @@ const DishForm = () => {
         <Form.Control
           type="number"
           required
+          disabled={loading}
           onChange={onChangeInput}
           min={1}
           name="price"
@@ -58,13 +80,27 @@ const DishForm = () => {
         <Form.Control
           type="text"
           required
+          disabled={loading}
           onChange={onChangeInput}
           minLength={10}
           name="image"
           value={form.image}
         />
       </Form.Group>
-      <Button variant="primary" type="submit">Primary</Button>
+
+      <Form.Group className="mb-3">
+        <div className="w-50">
+          <Image
+            className="w-100"
+            src={form.image
+              ? form.image
+              : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"}
+            alt={form.title ? form.title : 'no image'} />
+        </div>
+      </Form.Group>
+
+      <Button variant="primary" type="submit" className="me-3" disabled={loading}>Save</Button>
+      <NavLink to="/admin" className="btn btn-secondary">Cansel</NavLink>
     </Form>
   );
 };

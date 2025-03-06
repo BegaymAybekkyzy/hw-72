@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button, Card, Col, Image, Row } from 'react-bootstrap';
+import { Button, Card, Image } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 
 interface Props {
   dish: Dish;
   clickDeletion?: React.MouseEventHandler;
+  clickOnCard?: React.MouseEventHandler;
 }
 
-const DishCart: React.FC<Props> = ({dish, clickDeletion}) => {
+const DishCart: React.FC<Props> = ({dish, clickDeletion, clickOnCard}) => {
   const location = useLocation();
   const path = location.pathname.split('/');
   const pathname = path[1];
@@ -17,32 +18,23 @@ const DishCart: React.FC<Props> = ({dish, clickDeletion}) => {
   if (pathname === 'admin') {
     buttons = (
       <>
-        <Button
-          variant="dark"
-          className="me-3"
-          onClick={clickDeletion}
-        >Delete</Button>
-        <NavLink to="/admin/dishes/edit-dish" className="btn btn-dark">Edit</NavLink>
+        <NavLink to={`/admin/dishes/edit-dish/${dish.id}`} className="btn btn-primary me-3">Edit</NavLink>
+        <Button variant="danger" onClick={clickDeletion}>Delete</Button>
       </>
     );
   }
 
   return (
-    <Card className="mb-3">
-      <Row className="align-items-center">
-        <Col md={4}>
-          <div>
-            <Image className="w-100 d-block" src={dish.image} rounded/>
-          </div>
-        </Col>
-        <Col>
-          <Card.Body>
-            <Card.Title>{dish.title}</Card.Title>
-            <Card.Text>{dish.price} KGS</Card.Text>
-            {buttons}
-          </Card.Body>
-        </Col>
-      </Row>
+    <Card className="mb-3" onClick={clickOnCard}>
+      <div style={{height: "240px"}} className="w-100 p-1">
+        <Image className="w-100 d-block" src={dish.image} rounded/>
+      </div>
+
+      <Card.Body>
+        <Card.Title>{dish.title}</Card.Title>
+        <Card.Text>{dish.price} KGS</Card.Text>
+        {buttons}
+      </Card.Body>
     </Card>
   );
 };

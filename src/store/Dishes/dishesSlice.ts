@@ -1,37 +1,43 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  deleteDish,
+  deleteDish, dishEditing,
   fetchAllDishes,
   idDish,
   submitNewDish,
-} from '../thunks/dishesThunks.ts';
+} from './dishesThunks.ts';
 import { RootState } from '../../app/store.ts';
 
 interface DishesState {
-  dishes: Dish[];
-  dish: DishForm | null;
+  dishesArray: Dish[];
+  editableDish: Dish | null;
+  dishIdentifiers: DishID | null;
   loading: boolean;
 }
 
 const initialState: DishesState = {
-  dishes: [],
-  dish: null,
+  dishesArray: [],
+  editableDish: null,
+  dishIdentifiers: null,
   loading: false,
 };
 
 export const selectDishesArray =
-  (state: RootState) => state.dishes.dishes;
+  (state: RootState) => state.dishes.dishesArray;
 
 export const selectDishLoading =
   (state: RootState) => state.dishes.loading;
 
 export const selectDish =
-  (state: RootState) => state.dishes.dish;
+  (state: RootState) => state.dishes.editableDish;
 
 export const dishesSlice = createSlice({
   name: 'dishes',
   initialState,
-  reducers: {},
+  reducers: {
+    cleaningTheEditedDish: (state) => {
+      state.editableDish = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllDishes.pending, (state) => {
@@ -39,7 +45,8 @@ export const dishesSlice = createSlice({
       })
       .addCase(fetchAllDishes.fulfilled, (state, {payload}) => {
         state.loading = false;
-        state.dishes = payload;
+        state.dishesArray = payload.dishes;
+        state.dishIdentifiers = payload.dishesID;
       })
       .addCase(fetchAllDishes.rejected, (state) => {
         state.loading = false;
@@ -70,12 +77,23 @@ export const dishesSlice = createSlice({
       })
       .addCase(idDish.fulfilled, (state, {payload}) => {
         state.loading = false;
-        state.dish = payload;
+        state.editableDish = payload;
       })
       .addCase(idDish.rejected, (state) => {
+        state.loading = false;
+      })
+
+      .addCase(dishEditing.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(dishEditing.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(dishEditing.rejected, (state) => {
         state.loading = false;
       });
   },
 });
 
 export const dishesReducer = dishesSlice.reducer;
+export const {cleaningTheEditedDish} = dishesSlice.actions;

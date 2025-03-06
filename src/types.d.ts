@@ -11,3 +11,11 @@ interface DishAPI {
 interface Dish extends DishForm {
   id: string;
 }
+
+interface DishID {
+  [id: string]: string;
+}
+
+interface Order {
+  [id: string]: number;
+}
