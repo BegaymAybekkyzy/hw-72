@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Card, Image } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
+import { currency } from '../../constants.ts';
 
 interface Props {
   dish: Dish;
@@ -8,7 +9,7 @@ interface Props {
   clickOnCard?: React.MouseEventHandler;
 }
 
-const DishCart: React.FC<Props> = ({dish, clickDeletion, clickOnCard}) => {
+const DishCard: React.FC<Props> = ({dish, clickDeletion, clickOnCard}) => {
   const location = useLocation();
   const path = location.pathname.split('/');
   const pathname = path[1];
@@ -26,17 +27,17 @@ const DishCart: React.FC<Props> = ({dish, clickDeletion, clickOnCard}) => {
 
   return (
     <Card className="mb-3" onClick={clickOnCard}>
-      <div style={{height: "240px"}} className="w-100 p-1">
+      <div style={{height: "210px"}} className="w-100 p-1">
         <Image className="w-100 d-block" src={dish.image} rounded/>
       </div>
 
       <Card.Body>
         <Card.Title>{dish.title}</Card.Title>
-        <Card.Text>{dish.price} KGS</Card.Text>
+        <Card.Text>{dish.price} {currency}</Card.Text>
         {buttons}
       </Card.Body>
     </Card>
   );
 };
 
-export default DishCart;
+export default DishCard;

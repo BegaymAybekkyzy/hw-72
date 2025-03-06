@@ -16,6 +16,12 @@ interface DishID {
   [id: string]: string;
 }
 
-interface Order {
+interface OrderData {
   [id: string]: number;
+}
+
+interface Order {
+  dish: Dish;
+  amount: number;
+  total: number;
 }
