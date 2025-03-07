@@ -3,15 +3,15 @@ import DishCard from '../../../components/DishCard/DishCard.tsx';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { selectDishesArray } from '../../../store/Dishes/dishesSlice.ts';
 import { Button} from 'react-bootstrap';
-import { addingDishes, selectOrderList } from '../../../store/Orders/ordersSlice.ts';
+import { addingDishes, dishRemoval, selectOrderList } from '../../../store/Orders/ordersSlice.ts';
 import ModalWindow from '../../../components/UI/ModalWindow/ModalWindow.tsx';
 import { useState } from 'react';
+import { submitAnOrder } from '../../../store/Orders/ordersThunks.ts';
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(0);
 
-  const orderList = useAppSelector(selectOrderList);
+  const cart = useAppSelector(selectOrderList);
   const dishesList = useAppSelector(selectDishesArray);
   const dispatch = useAppDispatch();
 
@@ -19,20 +19,26 @@ const Home = () => {
   const handleShow = () => setShowModal(true);
 
   const addToCart = (dish: Dish) => {
-    // const dishMutation: DishAPI = {
-    //   [dish.id]: {
-    //     price: dish.price,
-    //     image: dish.image,
-    //     title: dish.title,
-    //   }
-    // };
     dispatch(addingDishes(dish));
-
-    setTotalPrice(prevState => prevState + Number(dish.price));
-    console.log(dish);
-    console.log(orderList);
   };
 
+  const deleteToCart = (dish: Cart) => {
+    dispatch(dishRemoval(dish));
+  };
+
+  const orderConfirmation = (cart: Cart[]) => {
+    console.log(cart);
+    const order = cart.reduce((acc, dish) => {
+      acc[dish.dish.id] = dish.amount;
+      return acc;
+    }, {} as OrderData);
+    dispatch(submitAnOrder(order));
+    console.log(order);
+  };
+
+  const totalPrice =  cart.reduce((acc, cartDish) => {
+    return acc + cartDish.dish.price * cartDish.amount;
+  }, 0);
 
   const content = (
     <div className="dishes-list">
@@ -59,9 +65,10 @@ const Home = () => {
       <ModalWindow
         total={totalPrice}
         show={showModal}
-        orderList = {orderList}
+        cart={cart}
+        order={()=> orderConfirmation(cart)}
+        deleteToCart={deleteToCart}
         handleClose={handleClose}/>
-
     </main>
   );
 };

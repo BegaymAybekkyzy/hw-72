@@ -20,7 +20,7 @@ interface OrderData {
   [id: string]: number;
 }
 
-interface Order {
+interface Cart {
   dish: Dish;
   amount: number;
   total: number;

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store.ts';
 
 interface OrdersState {
-  orderList: Order[];
+  orderList: Cart[];
 }
 
 const initialState: OrdersState = {
@@ -24,11 +24,30 @@ export const ordersSlice = createSlice({
         state.orderList[existingIndex].total =
           state.orderList[existingIndex].amount * state.orderList[existingIndex].dish.price;
       } else {
-        state.orderList.push({ dish, amount: 1, total: dish.price });
+        state.orderList.push({dish, amount: 1, total: dish.price});
       }
+    },
+
+    dishRemoval: (state, action: PayloadAction<Cart>) => {
+      const dish = action.payload;
+      const existingIndex =
+        state.orderList.findIndex(item => item.dish.id === dish.dish.id);
+
+      if (existingIndex !== -1) {
+        if (state.orderList[existingIndex].amount > 0)
+          state.orderList[existingIndex].amount--;
+          state.orderList[existingIndex].total =
+            state.orderList[existingIndex].amount * state.orderList[existingIndex].dish.price;
+      }
+
+      if (state.orderList[existingIndex].amount === 0) state.orderList.splice(existingIndex, 1);
+    },
+
+    orderClearingList: (state) => {
+      state.orderList = [];
     }
   },
 });
 
 export const ordersReducer = ordersSlice.reducer;
-export const { addingDishes } = ordersSlice.actions;
+export const {addingDishes, dishRemoval, orderClearingList} = ordersSlice.actions;

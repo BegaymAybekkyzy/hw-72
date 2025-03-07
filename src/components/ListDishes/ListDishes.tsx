@@ -31,7 +31,7 @@ const ListDishes: React.FC<Props> = ({card, additionalElement}) => {
 
   return (
     <>
-      <div className="d-flex align-items-center justify-content-sm-between">
+      <div className="d-flex align-items-center justify-content-sm-between mb-4">
         <h1>Dishes</h1>
         <div>
           {additionalElement}
