@@ -49,13 +49,8 @@ export const idDish = createAsyncThunk<Dish, string>(
 export const dishEditing = createAsyncThunk<void, Dish>(
   "dishes/editDish",
   async (dish) => {
-    const updateDish = {
-      title: dish.title,
-      price: dish.price,
-      image: dish.image,
-    };
-
-    await axiosAPI.put(`pizza/dishes/${dish.id}.json`, updateDish);
+    const { id, ...updateDish } = dish;
+    await axiosAPI.put(`pizza/dishes/${id}.json`, updateDish);
   },
 );
 

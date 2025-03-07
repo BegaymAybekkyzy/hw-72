@@ -20,7 +20,7 @@ interface Props {
 const initialValues = {
   title: "",
   price: 0,
-  image: "",
+  image: "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
 };
 const DishForm: React.FC<Props> = ({ isEdit = false }) => {
   const [form, setForm] = useState<DishForm>(initialValues);
@@ -90,10 +90,8 @@ const DishForm: React.FC<Props> = ({ isEdit = false }) => {
         <Form.Label>Image</Form.Label>
         <Form.Control
           type="text"
-          required
           disabled={loading}
           onChange={onChangeInput}
-          minLength={10}
           name="image"
           value={form.image}
         />
@@ -103,12 +101,8 @@ const DishForm: React.FC<Props> = ({ isEdit = false }) => {
         <div className="w-50">
           <Image
             className="w-100"
-            src={
-              form.image
-                ? form.image
-                : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
-            }
-            alt={form.title ? form.title : "no image"}
+            src={form.image || initialValues.image}
+            alt={form.title || "No image"}
           />
         </div>
       </Form.Group>
