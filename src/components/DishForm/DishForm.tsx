@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Image } from 'react-bootstrap';
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { dishEditing, submitNewDish } from '../../store/Dishes/dishesThunks.ts';
-import { cleaningTheEditedDish, selectDish, selectDishLoading } from '../../store/Dishes/dishesSlice.ts';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Button, Form, Image } from "react-bootstrap";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import {
+  dishEditing,
+  fetchAllDishes,
+  submitNewDish,
+} from "../../store/Dishes/dishesThunks.ts";
+import {
+  cleaningTheEditedDish,
+  selectDish,
+  selectDishLoading,
+} from "../../store/Dishes/dishesSlice.ts";
+import { NavLink, useNavigate } from "react-router-dom";
 
 interface Props {
   isEdit?: boolean;
 }
 
 const initialValues = {
-  title: '',
+  title: "",
   price: 0,
-  image: '',
+  image: "",
 };
-const DishForm: React.FC<Props> = ({isEdit = false}) => {
+const DishForm: React.FC<Props> = ({ isEdit = false }) => {
   const [form, setForm] = useState<DishForm>(initialValues);
+  const navigate = useNavigate();
 
   const modifiedDish = useAppSelector(selectDish);
   const loading = useAppSelector(selectDishLoading);
@@ -23,30 +32,32 @@ const DishForm: React.FC<Props> = ({isEdit = false}) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if(isEdit && modifiedDish) setForm(modifiedDish);
+    if (isEdit && modifiedDish) setForm(modifiedDish);
   }, [isEdit, modifiedDish]);
 
   const onSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (form.title.trim().length === 0 && form.image.trim().length === 0) {
-      alert('Please fill in the fields');
+      alert("Please fill in the fields");
       setForm(initialValues);
       return;
     }
 
-    if(isEdit && modifiedDish) {
-      dispatch(dishEditing({...form, id: modifiedDish.id}));
+    if (isEdit && modifiedDish) {
+      dispatch(dishEditing({ ...form, id: modifiedDish.id }));
       dispatch(cleaningTheEditedDish());
     } else {
-      dispatch(submitNewDish({...form}));
+      dispatch(submitNewDish({ ...form }));
     }
     setForm(initialValues);
+    dispatch(fetchAllDishes());
+    navigate("/admin");
   };
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {value, name} = e.target;
-    setForm({...form, [name]: value});
+    const { value, name } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
   return (
@@ -92,15 +103,27 @@ const DishForm: React.FC<Props> = ({isEdit = false}) => {
         <div className="w-50">
           <Image
             className="w-100"
-            src={form.image
-              ? form.image
-              : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"}
-            alt={form.title ? form.title : 'no image'} />
+            src={
+              form.image
+                ? form.image
+                : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+            }
+            alt={form.title ? form.title : "no image"}
+          />
         </div>
       </Form.Group>
 
-      <Button variant="primary" type="submit" className="me-3" disabled={loading}>Save</Button>
-      <NavLink to="/admin" className="btn btn-secondary">Cansel</NavLink>
+      <Button
+        variant="primary"
+        type="submit"
+        className="me-3"
+        disabled={loading}
+      >
+        Save
+      </Button>
+      <NavLink to="/admin" className="btn btn-secondary">
+        Cansel
+      </NavLink>
     </Form>
   );
 };

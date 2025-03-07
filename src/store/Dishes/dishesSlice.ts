@@ -1,52 +1,52 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
-  deleteDish, dishEditing,
+  deleteDish,
+  dishEditing,
   fetchAllDishes,
   idDish,
   submitNewDish,
-} from './dishesThunks.ts';
-import { RootState } from '../../app/store.ts';
+} from "./dishesThunks.ts";
+import { RootState } from "../../app/store.ts";
 
 interface DishesState {
   dishesArray: Dish[];
   editableDish: Dish | null;
-  dishIdentifiers: DishID | null;
+  dishID: DishAPI | null;
   loading: boolean;
 }
 
 const initialState: DishesState = {
   dishesArray: [],
   editableDish: null,
-  dishIdentifiers: null,
+  dishID: null,
   loading: false,
 };
 
-export const selectDishesArray =
-  (state: RootState) => state.dishes.dishesArray;
+export const selectDishesArray = (state: RootState) => state.dishes.dishesArray;
 
-export const selectDishLoading =
-  (state: RootState) => state.dishes.loading;
+export const selectDishLoading = (state: RootState) => state.dishes.loading;
 
-export const selectDish =
-  (state: RootState) => state.dishes.editableDish;
+export const selectDish = (state: RootState) => state.dishes.editableDish;
+
+export const selectDishesID = (state: RootState) => state.dishes.dishID;
 
 export const dishesSlice = createSlice({
-  name: 'dishes',
+  name: "dishes",
   initialState,
   reducers: {
     cleaningTheEditedDish: (state) => {
       state.editableDish = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllDishes.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchAllDishes.fulfilled, (state, {payload}) => {
+      .addCase(fetchAllDishes.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.dishesArray = payload.dishes;
-        state.dishIdentifiers = payload.dishesID;
+        state.dishID = payload.dishesID;
       })
       .addCase(fetchAllDishes.rejected, (state) => {
         state.loading = false;
@@ -75,7 +75,7 @@ export const dishesSlice = createSlice({
       .addCase(idDish.pending, (state) => {
         state.loading = true;
       })
-      .addCase(idDish.fulfilled, (state, {payload}) => {
+      .addCase(idDish.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.editableDish = payload;
       })
@@ -96,4 +96,4 @@ export const dishesSlice = createSlice({
 });
 
 export const dishesReducer = dishesSlice.reducer;
-export const {cleaningTheEditedDish} = dishesSlice.actions;
+export const { cleaningTheEditedDish } = dishesSlice.actions;

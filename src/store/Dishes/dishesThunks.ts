@@ -1,30 +1,25 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosAPI from "../../axiosAPI.ts";
 
-export const fetchAllDishes =
-  createAsyncThunk<{ dishes: Dish[], dishesID: DishID }, void>(
-  "dishes/fetchAllDishes",
-  async () => {
-    const response = await axiosAPI<DishAPI>("pizza/dishes.json");
-    const keysArray = Object.keys(response.data);
-    const dishes: Dish[] = keysArray.map((key) => {
-      return {
-        ...response.data[key],
-        id: key,
-      };
-    });
-
-    const dishesID: DishID = dishes.reduce((acc, dish) => {
-      acc[dish.id] = dish.title;
-      return acc;
-    }, {} as DishID);
-
+export const fetchAllDishes = createAsyncThunk<
+  { dishes: Dish[]; dishesID: DishAPI },
+  void
+>("dishes/fetchAllDishes", async () => {
+  const response = await axiosAPI<DishAPI>("pizza/dishes.json");
+  const keysArray = Object.keys(response.data);
+  const dishes: Dish[] = keysArray.map((key) => {
     return {
-      dishes,
-      dishesID
+      ...response.data[key],
+      id: key,
     };
-  },
-);
+  });
+
+  const dishesID: DishAPI = response.data;
+  return {
+    dishes,
+    dishesID,
+  };
+});
 
 export const deleteDish = createAsyncThunk<void, string>(
   "dishes/deleteDish",
@@ -46,7 +41,7 @@ export const idDish = createAsyncThunk<Dish, string>(
     const response = await axiosAPI<DishForm>(`pizza/dishes/${id}.json`);
     return {
       ...response.data,
-      id
+      id,
     };
   },
 );
@@ -57,8 +52,17 @@ export const dishEditing = createAsyncThunk<void, Dish>(
     const updateDish = {
       title: dish.title,
       price: dish.price,
-      image:dish.image,
+      image: dish.image,
     };
 
     await axiosAPI.put(`pizza/dishes/${dish.id}.json`, updateDish);
-  });
+  },
+);
+
+export const fetchOrders = createAsyncThunk<OrderData, void>(
+  "orders/fetchOrders",
+  async () => {
+    const response = await axiosAPI("pizza/orders.json");
+    return response.data;
+  },
+);

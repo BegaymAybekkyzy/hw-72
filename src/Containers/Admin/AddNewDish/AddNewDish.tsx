@@ -1,5 +1,4 @@
-import DishForm from '../../../components/DishForm/DishForm.tsx';
-
+import DishForm from "../../../components/DishForm/DishForm.tsx";
 
 const AddNewDish = () => {
   return (
@@ -7,7 +6,7 @@ const AddNewDish = () => {
       <h1 className="text-center">Add new dish</h1>
 
       <div className="w-50 mx-auto">
-        <DishForm/>
+        <DishForm />
       </div>
     </main>
   );

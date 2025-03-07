@@ -12,10 +12,6 @@ interface Dish extends DishForm {
   id: string;
 }
 
-interface DishID {
-  [id: string]: string;
-}
-
 interface OrderData {
   [id: string]: number;
 }
@@ -24,4 +20,9 @@ interface Cart {
   dish: Dish;
   amount: number;
   total: number;
+}
+
+interface OrdersList {
+  orderId: string;
+  dishes: { dish: DishForm; amount: number; total: number }[] | null;
 }
