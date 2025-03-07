@@ -20,7 +20,8 @@ interface Props {
 const initialValues = {
   title: "",
   price: 0,
-  image: "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+  image:
+    "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg",
 };
 const DishForm: React.FC<Props> = ({ isEdit = false }) => {
   const [form, setForm] = useState<DishForm>(initialValues);
@@ -98,7 +99,7 @@ const DishForm: React.FC<Props> = ({ isEdit = false }) => {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <div className="w-50">
+        <div className="w-50 border">
           <Image
             className="w-100"
             src={form.image || initialValues.image}

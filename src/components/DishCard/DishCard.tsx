@@ -34,7 +34,7 @@ const DishCard: React.FC<Props> = ({ dish, clickDeletion, clickOnCard }) => {
 
   return (
     <Card className="mb-3" onClick={clickOnCard}>
-      <div style={{ height: "210px" }} className="w-100 p-1">
+      <div className="w-100 p-1">
         <Image className="w-100 d-block" src={dish.image} rounded />
       </div>
 
